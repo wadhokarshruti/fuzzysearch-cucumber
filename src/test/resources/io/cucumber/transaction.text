@@ -1,0 +1,48 @@
+Feature: Find the inexact customer match
+Scenario Outline:
+  Given multiple addresses <demographicAddresses> from the demographic API for a customer
+  When customer enters <addressFromRequest> non-standard address in the request
+  And cutoff is <givenCutOff>
+  Then Know the match score
+
+  Examples:
+    | demographicAddresses | addressFromRequest | givenCutOff|
+    |SHOP 100Q TARGET LVL 1 28 BEACH ST|LVL 1 28 BEACH|70|
+    |SHOP 100Q TARGET LVL 1 28 BEACH ST|LVL 1/28 BEACH|70|
+    |SHOP 100Q TARGET LVL 1 28 BEACH ST|LVL 1/28 BEACH Street|70|
+    |Unit 3, 90 South Street;Steven Wilson|3/90-98 South st |70 |
+    |Unit 3, 90 South Street|South st     |70 |
+    |Unit 3, 90 South Street|Unit South st     |70 |
+    |Unit 3, 90 South Street| 90-98 South St     |70 |
+    |Unit 3, 90 South Street|Unit 90/98 South St     |70 |
+    |Unit 3, 90 South Street|3 90-98 South ST     |70 |
+    |Unit 3, 90 South Street|3/90-98 South street     |70 |
+    |36-50 MOUNT DRUITT RD;546 freeman ave;45th Ave 5th Street|36/50 MOUNT DRUITT Road|70|
+    |36-50 MOUNT DRUITT RD;8-12 KENSINGTON STREET;45th Ave 5th Street|8-12 KENSINGTON STREET|70|
+    |36-50 MOUNT DRUITT RD;8-12 KENSINGTON STREET;45th Ave 5th Street|8-12 KENSINGTON STREET|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK CIR|4 SADDLEBACK CIR|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK CIR|4 SADDLEBACK Circle|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK CIR|4- SADDLEBACK Circle|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK CIR|4-SADDLEBACK Circle|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK CIR|4/SADDLEBACK Circle|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK|4/SADDLEBACK CIR|70|
+    |4 SADDLEBACK circle;4 SADDLEBACK CIRcle;4 SADDLEBACK|4/SADDLEBACK CIR|70|
+    |Steven Wilson|3/90-98 South street     |70 |
+    |45th Avenue 5th st.;546 freeman ave;45th Ave 5th Street|45th Ave 5th Street|70|
+    |1  WESTBROOK  CRESCENT|1 WEST BROOK CRST|70|
+    |1  WESTBROOK  CRESCENT|1- WEST BROOK  CRST|70|
+    |1  WESTBROOK  CRESCENT|1WESTBROOK CRST|70|
+    |1  WESTBROOK  CRESCENT|1st WEST BROOK  CRST|70|
+    |UNIT 4 15-19  SMITH  STREET|UT-4 15/19 SMITH STREET|70|
+    |UNIT 4 15-19  SMITH  STREET|UT-4 15/19 SMITH ST|70|
+    |UNIT 4 15-19  SMITH  STREET|UT-4 15-19 SMITH STREET|70|
+    |UNIT 4 15-19  SMITH  STREET|UT-4 15/19 STREET|70|
+    |UNIT 87 LVL 87 KENT ST|87 LVL- 87 KENT ST|70|
+    |UNIT 87 LVL 87  KENT ST|UNIT-87 KENT ST|70|
+    |UNIT 87 LVL 87  KENT ST|UNIT-87 LEVEL 87 KENT STREET|70|
+    |UNIT 87 LVL 87  KENT ST|LVL/87 UNIT/87 KENT ST|70|
+    |UNIT 87 LVL 87  KENT ST|LVL/87 KENT ST UNIT/87 |70|
+    |UNIT 27 2-6  KENT  ROAD|27 UNIT 2-6  KENT RD|70|
+    |UNIT 27 2-6  KENT  ROAD|27-UNIT 2/6  KENT RD|70|pom
+    |UNIT 27 2-6  KENT  ROAD|2-6 UNIT KENT RD|70|
+
